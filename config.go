@@ -72,3 +72,14 @@ func (this *Config) GetFloat64(key string) float64 {
 	return res
 }
 
+
+func (this *Config) GetBool(key string) bool {
+	var val = this.getValueOrDefault(key)
+	var res, err = cast.ToBoolE(val)
+	if err != nil {
+		panic(fmt.Sprintf("%v is not a bool value! It is %v", val, reflect.TypeOf(val)))
+	}
+	return res
+}
+
+
