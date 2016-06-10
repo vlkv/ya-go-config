@@ -24,10 +24,14 @@ func New(defaults map[string]interface{}) *Config {
 	return res
 }
 
-func (this *Config) Load(jsonFilePath string) {
+func (this *Config) LoadE(jsonFilePath string) error {
 	file, _ := os.Open(jsonFilePath)
 	decoder := json.NewDecoder(file)
-	var err = decoder.Decode(&this.values)
+	return decoder.Decode(&this.values)
+}
+
+func (this *Config) Load(jsonFilePath string) {
+	var err = this.LoadE(jsonFilePath)
 	if err != nil {
 		panic(fmt.Sprintf("Cannot load config file %s, reason: %v", jsonFilePath, err))
 	}
