@@ -2,13 +2,13 @@
 Yet Another Go Config library, simple and tiny, with JSON format
 
 Example of config file: config.json
-```
+```json
 {
     "answer": 53
 }
 ```
 Define default values and read values from config.json:
-```
+```go
 defaults := map[string]interface{}{
 		"question": "Meaning of life",
 		"answer": 42,
