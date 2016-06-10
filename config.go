@@ -5,6 +5,7 @@ import (
 	"os"
 	"fmt"
 	"reflect"
+	"time"
 )
 
 type Config struct {
@@ -130,6 +131,35 @@ func (this *Config) GetBool(key string) bool {
 		panic(err)
 	}
 	return res
+}
+
+func (this *Config) GetDurationE(key string) (res time.Duration, err error) {
+	var val interface{}
+	val, err = this.getValueOrDefaultE(key)
+	if err != nil {
+		return
+	}
+	resStr, ok := val.(string)
+	if !ok {
+		return res, fmt.Errorf("Type assertion '%v' to string failed, type is %v", val, reflect.TypeOf(val))
+	}
+	res, err = time.ParseDuration(resStr)
+	if err != nil {
+		return
+	}
+	return res, nil
+}
+
+func (this *Config) GetDuration(key string) time.Duration {
+	res, err := this.GetStrE(key)
+	if err != nil {
+		panic(err)
+	}
+	resDuration, errParse := time.ParseDuration(res)
+	if errParse != nil {
+		panic(errParse)
+	}
+	return resDuration
 }
 
 

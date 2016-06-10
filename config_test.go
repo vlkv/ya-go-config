@@ -3,6 +3,7 @@ package ya_go_config
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"time"
 )
 
 func TestSimple(t *testing.T) {
@@ -13,6 +14,7 @@ func TestSimple(t *testing.T) {
 		"b.key": "defval",
 		"c.bool_t": true,
 		"c.bool_f": false,
+		"d.duration": "1h20m",
 	}
 
 	config := New(defaults)
@@ -24,6 +26,7 @@ func TestSimple(t *testing.T) {
 	assert.Equal(t, "defval", config.GetStr("b.key"))
 	assert.Equal(t, true, config.GetBool("c.bool_t"))
 	assert.Equal(t, false, config.GetBool("c.bool_f"))
+	assert.Equal(t, time.Hour + 20*time.Minute, config.GetDuration("d.duration"))
 	assert.Panics(t, func() { config.GetStr("d.non_existent_key") })
 }
 
