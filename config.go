@@ -111,7 +111,7 @@ func (this *Config) GetBoolE(key string) (res bool, err error) {
 	}
 	res, ok := val.(bool)
 	if !ok {
-		res, fmt.Errorf("Type assertion '%v' to bool failed", val)
+		return res, fmt.Errorf("Type assertion '%v' to bool failed", val)
 	}
 	return res, nil
 }
