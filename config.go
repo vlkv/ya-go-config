@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"fmt"
+	"reflect"
 )
 
 type Config struct {
@@ -53,7 +54,7 @@ func (this *Config) GetStrE(key string) (res string, err error) {
 	}
 	res, ok := val.(string)
 	if !ok {
-		return res, fmt.Errorf("Type assertion '%v' to string failed", val)
+		return res, fmt.Errorf("Type assertion '%v' to string failed, type is %v", val, reflect.TypeOf(val))
 	}
 	return res, nil
 }
@@ -67,11 +68,18 @@ func (this *Config) GetStr(key string) string {
 }
 
 func (this *Config) GetIntE(key string) (res int, err error) {
-	val, err := this.GetFloat64E(key) // NOTE: JSON stores any number as float
+	val, err := this.getValueOrDefaultE(key)
 	if err != nil {
-		return res, fmt.Errorf("Could not get number value for key '%s', reason: %v", key, err)
+		return res, err
 	}
-	res = int(val) // TODO: panic if fractional part is not zero
+	res, ok := val.(int)
+	if !ok {
+		resFloat64, okFloat64 := val.(float64)
+		if !okFloat64 {
+			return res, fmt.Errorf("Type assertion '%v' to int/float64 failed, type is %v", val, reflect.TypeOf(val))
+		}
+		res = int(resFloat64)
+	}
 	return res, nil
 }
 
@@ -90,7 +98,7 @@ func (this *Config) GetFloat64E(key string) (res float64, err error) {
 	}
 	res, ok := val.(float64)
 	if !ok {
-		return res, fmt.Errorf("Type assertion '%v' to float failed", val)
+		return res, fmt.Errorf("Type assertion '%v' to float failed, type is %v", val, reflect.TypeOf(val))
 	}
 	return res, nil
 }
@@ -111,7 +119,7 @@ func (this *Config) GetBoolE(key string) (res bool, err error) {
 	}
 	res, ok := val.(bool)
 	if !ok {
-		return res, fmt.Errorf("Type assertion '%v' to bool failed", val)
+		return res, fmt.Errorf("Type assertion '%v' to bool failed, type is %v", val, reflect.TypeOf(val))
 	}
 	return res, nil
 }
