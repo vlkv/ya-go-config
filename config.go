@@ -37,6 +37,27 @@ func (this *Config) Load(jsonFilePath string) {
 	}
 }
 
+func (this *Config) State() map[string]interface{} {
+	res := map[string]interface{}{}
+	for k, _ := range this.defaults {
+		val, err := this.getValueOrDefaultE(k)
+		if err != nil {
+			panic(fmt.Errorf("Unexpected problem: %v", err))
+		}
+		res[k] = val
+	}
+	return res
+}
+
+func (this *Config) String() string {
+	st := this.State()
+	bin, err := json.MarshalIndent(st, "", "  ")
+	if err != nil {
+		panic(fmt.Errorf("Could not convert state to string, reason: ", err))
+	}
+	return string(bin)
+}
+
 func (this *Config) getValueOrDefaultE(key string) (interface{}, error) {
 	val, ok := this.values[key]
 	if !ok {

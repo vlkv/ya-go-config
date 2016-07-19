@@ -28,6 +28,18 @@ func TestSimple(t *testing.T) {
 	assert.Equal(t, false, config.GetBool("c.bool_f"))
 	assert.Equal(t, time.Hour + 20*time.Minute, config.GetDuration("d.duration"))
 	assert.Panics(t, func() { config.GetStr("d.non_existent_key") })
+
+
+	configStrState := `{
+  "a.float": 3.14,
+  "a.int": 12,
+  "a.str": "String value",
+  "b.key": "defval",
+  "c.bool_f": false,
+  "c.bool_t": true,
+  "d.duration": "1h20m"
+}`
+	assert.Equal(t, configStrState, config.String())
 }
 
 // TODO: Add some more complex tests
