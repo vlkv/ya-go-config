@@ -53,7 +53,7 @@ func (this *Config) String() string {
 	st := this.State()
 	bin, err := json.MarshalIndent(st, "", "  ")
 	if err != nil {
-		panic(fmt.Errorf("Could not convert state to string, reason: ", err))
+		panic(fmt.Errorf("Could not convert state to string, reason: %v", err))
 	}
 	return string(bin)
 }
